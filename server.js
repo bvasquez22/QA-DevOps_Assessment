@@ -49,9 +49,12 @@ const calculateHealthAfterAttack = ({ playerDuo, compDuo }) => {
 };
 
 app.get("/api/robots", (req, res) => {
+  rollbar.log("User requested list of Bots")
   try {
+    rollbar.log("Bot list sent to user")
     res.status(200).send(botsArr);
   } catch (error) {
+    rollbar.error("Bot list failed")
     console.error("ERROR GETTING BOTS", error);
     res.sendStatus(400);
   }
@@ -60,14 +63,17 @@ app.get("/api/robots", (req, res) => {
 app.get("/api/robots/shuffled", (req, res) => {
   try {
     let shuffled = shuffle(bots);
+    rollbar.log("Bot array shuffled and sent")
     res.status(200).send(shuffled);
   } catch (error) {
     console.error("ERROR GETTING SHUFFLED BOTS", error);
+    rollbar.error("Shuffle failed")
     res.sendStatus(400);
   }
 });
 
 app.post("/api/duel", (req, res) => {
+  rollbar.log("User initiated a duel")
   try {
     const { compDuo, playerDuo } = req.body;
 
@@ -79,22 +85,27 @@ app.post("/api/duel", (req, res) => {
     // comparing the total health to determine a winner
     if (compHealth > playerHealth) {
       playerRecord.losses += 1;
+      rollbar.log("Duel completed, loss reported")
       res.status(200).send("You lost!");
     } else {
       playerRecord.losses += 1;
+      rollbar.log("Duel completed, win reported")
       res.status(200).send("You won!");
     }
   } catch (error) {
     console.log("ERROR DUELING", error);
+    rollbar.error("Duel failed")
     res.sendStatus(400);
   }
 });
 
 app.get("/api/player", (req, res) => {
   try {
+    rollbar.log("Player stats sent to user")
     res.status(200).send(playerRecord);
   } catch (error) {
     console.log("ERROR GETTING PLAYER STATS", error);
+    rollbar.error("Player stats failed")
     res.sendStatus(400);
   }
 });
