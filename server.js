@@ -3,6 +3,17 @@ const cors = require('cors');
 const bots = require("./src/botsData");
 const shuffle = require("./src/shuffle");
 
+// include and initialize the rollbar library with your access token
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: '0319ace383204e0891a31704efdfbe4d',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!')
+
 const playerRecord = {
   wins: 0,
   losses: 0,
